@@ -1,23 +1,18 @@
-const Users = require("../models/userModel")
-const jwt = require('jsonwebtoken')
+import jwt from 'jsonwebtoken'
+import Users from '../models/userModel'
 
-const auth = async (req, res, next) => {
-    try {
-        const token = req.header("Authorization")
 
-        if(!token) return res.status(400).json({msg: "Invalid Authentication."})
+const auth = async (req, res) => {
+    const token = req.headers.authorization;
+    if(!token) return res.status(400).json({err: 'Invalid Authentication.'})
 
-        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
-        if(!decoded) return res.status(400).json({msg: "Invalid Authentication."})
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+    if(!decoded) return res.status(400).json({err: 'Invalid Authentication.'})
 
-        const user = await Users.findOne({_id: decoded.id})
-        
-        req.user = user
-        next()
-    } catch (err) {
-        return res.status(500).json({msg: err.message})
-    }
+    const user = await Users.findOne({_id: decoded.id})
+
+    return {id: user._id, role: user.role, root: user.root};
 }
 
 
-module.exports = auth
+export default auth

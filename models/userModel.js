@@ -1,50 +1,34 @@
-const mongoose = require('mongoose')
-
+import mongoose from 'mongoose'
 
 const userSchema = new mongoose.Schema({
-    fullname: {
+    name: {
         type: String,
-        required: true,
-        trim: true,
-        maxlength: 25
-    },
-    username: {
-        type: String,
-        required: true,
-        trim: true,
-        maxlength: 25,
-        unique: true
+        required: true
     },
     email: {
         type: String,
         required: true,
-        trim: true,
         unique: true
     },
     password: {
         type: String,
         required: true
     },
-    avatar:{
+    role: {
+        type: String,
+        default: 'user'
+    },
+    root: {
+        type: Boolean,
+        default: false
+    },
+    avatar: {
         type: String,
         default: 'https://res.cloudinary.com/devatchannel/image/upload/v1602752402/avatar/avatar_cugq40.png'
-    },
-    role: {type: String, default: 'user'},
-    gender: {type: String, default: 'male'},
-    mobile: {type: String, default: ''},
-    address: {type: String, default: ''},
-    story: {
-        type: String, 
-        default: '',
-        maxlength: 200
-    },
-    website: {type: String, default: ''},
-    followers: [{type: mongoose.Types.ObjectId, ref: 'user'}],
-    following: [{type: mongoose.Types.ObjectId, ref: 'user'}],
-    saved: [{type: mongoose.Types.ObjectId, ref: 'user'}]
+    }
 }, {
     timestamps: true
 })
 
-
-module.exports = mongoose.model('user', userSchema)
+let Dataset = mongoose.models.user || mongoose.model('user', userSchema)
+export default Dataset
